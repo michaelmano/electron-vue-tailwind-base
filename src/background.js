@@ -1,8 +1,9 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, net } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import cheerio from 'cheerio'
 import store from './store'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -10,7 +11,21 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
-])
+]);
+
+async function getPublicIP() {
+  const request = net.request('https://ifconfig.me')
+  request.on('response', (response) => {
+    console.log(`STATUS: ${response.statusCode}`)
+    console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
+    response.on('data', (chunk) => {
+      const $ = cheerio.load(chunk);
+      const IP = $('#ip_address').text();
+      console.log(IP)
+    });
+  })
+  request.end()
+}
 
 async function createWindow() {
   // Create the browser window.
@@ -21,6 +36,8 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: true,
+      enableRemoteModule: true,
     },
   })
 
@@ -62,6 +79,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+  getPublicIP();
   createWindow()
 })
 
