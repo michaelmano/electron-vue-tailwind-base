@@ -1,1 +1,3 @@
 # KeeLoc
+
+# Testing git hooks
