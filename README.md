@@ -1,3 +1,1 @@
-# KeeLoc
-
-# Testing git hooks
+# Electron Vue Tailwindcss base repo
