@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, net } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import store from './store'
@@ -17,6 +17,9 @@ async function createWindow() {
   const win = new BrowserWindow({
     minWidth: 800,
     minHeight: 610,
+    titleBarStyle: 'hidden',
+    transparent: true,
+    // frame: false,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -24,7 +27,9 @@ async function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
-  })
+  });
+
+  win.setMenu(null);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -37,6 +42,14 @@ async function createWindow() {
   }
 
   win.maximize()
+
+  ipcMain.on('toggle-window-size', () => {
+    if (win.isMaximized()){
+        win.unmaximize();
+    } else {
+        win.maximize();
+    }
+  });
 }
 
 // Quit when all windows are closed.

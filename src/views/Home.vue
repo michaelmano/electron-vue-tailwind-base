@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import SvgVue from '@/assets/icons/vue.svg'
+import SvgVue from '@/assets/icons/vue.svg';
 
 export default {
   name: 'Home',
   components: {
     SvgVue,
-  }
+  },
 }
 </script>

@@ -1,1 +1,10 @@
 @import 'card';
+
+.title-bar {
+  -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+}
