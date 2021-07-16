@@ -1,5 +1,5 @@
 'use strict'
-
+import windowStateKeeper from 'electron-window-state'
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
@@ -13,10 +13,19 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow() {
-  // Create the browser window.
+
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800
+  });
+
   const win = new BrowserWindow({
     minWidth: 800,
     minHeight: 610,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     titleBarStyle: 'hidden',
     transparent: true,
     // frame: false,
@@ -29,7 +38,7 @@ async function createWindow() {
     },
   });
 
-  win.setMenu(null);
+  mainWindowState.manage(win);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -41,7 +50,6 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
-  win.maximize()
 
   ipcMain.on('toggle-window-size', () => {
     if (win.isMaximized()){
