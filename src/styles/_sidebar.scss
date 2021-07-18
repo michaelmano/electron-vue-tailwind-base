@@ -1,0 +1,23 @@
+.sidebar {
+  @apply bg-gray-900;
+  position: relative;
+  flex-grow: 0;
+  flex-shrink: 0;
+  min-width: 100px;
+  max-width: 380px;
+  width: 100%;
+  padding-top: 30px;
+
+  &__resizer {
+    @apply bg-indigo-900;
+    width: 4px;
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: 0;
+    cursor: col-resize;
+    &:hover {
+      @apply bg-indigo-600;
+    }
+  }
+}
